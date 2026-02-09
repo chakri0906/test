@@ -1,17 +1,22 @@
+# azure-pipelines.yml
 trigger:
-  - main  # or your branch name
+  - main
 
 pool:
-  name: Default    # your agent pool name
+  name: Default
   demands:
-    - agent.name -equals chakri  # your self-hosted agent
+    - agent.name -equals chakri
 
 steps:
-  - task: Maven@3
-    inputs:
-      mavenPomFile: 'pom.xml'
-      goals: 'clean compile exec:java'
-      options: '-Dexec.mainClass="com.example.App"'
-      mavenOptions: '-Xmx1024m'
-      publishJUnitResults: false
+  # Step 1: Verify Java, Maven, and Chrome
+  - script: |
+      java -version
+      mvn -version
+      /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --version
+      /opt/homebrew/bin/chromedriver --version
+    displayName: 'Verify Java, Maven, Chrome, and ChromeDriver'
 
+  # Step 2: Build and run Selenium tests
+  - script: |
+      mvn clean compile exec:java -Dexec.mainClass="com.example.App"
+    displayName: 'Build and run Selenium tests'
