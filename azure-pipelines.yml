@@ -1,22 +1,36 @@
-# azure-pipelines.yml
+# File: azure-pipelines.yml
 trigger:
-  - main
+- main  # Change to your branch if needed
 
 pool:
-  name: Default
+  name: Default   # Your self-hosted agent pool
   demands:
     - agent.name -equals chakri
+    - java
+    - maven
+
+variables:
+  JAVA_HOME: /opt/homebrew/opt/openjdk@17
+  PATH: /opt/homebrew/bin:/opt/homebrew/opt/openjdk@17/bin:$(PATH)
 
 steps:
-  # Step 1: Verify Java, Maven, and Chrome
-  - script: |
-      java -version
-      mvn -version
-      /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --version
-      /opt/homebrew/bin/chromedriver --version
-    displayName: 'Verify Java, Maven, Chrome, and ChromeDriver'
+# Step 1: Checkout the code
+- checkout: self
 
-  # Step 2: Build and run Selenium tests
-  - script: |
-      mvn clean compile exec:java -Dexec.mainClass="com.example.App"
-    displayName: 'Build and run Selenium tests'
+# Step 2: Show Java and Maven versions
+- script: |
+    echo "Java version:"
+    java -version
+    echo "Maven version:"
+    mvn -v
+  displayName: 'Check Java and Maven versions'
+
+# Step 3: Build the Maven project
+- script: |
+    mvn clean compile
+  displayName: 'Build Maven Project'
+
+# Step 4: Run Selenium App
+- script: |
+    mvn exec:java -Dexec.mainClass="com.example.App"
+  displayName: 'Run Selenium Tests'
