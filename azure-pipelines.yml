@@ -1,0 +1,11 @@
+trigger:
+- main  # runs on push to main branch
+
+pool:
+  vmImage: 'macos-latest'  # your Selenium + Chrome runs on Mac
+
+steps:
+- task: Maven@3
+  inputs:
+    mavenPomFile: 'pom.xml'
+    goals: 'clean compile exec:java'
