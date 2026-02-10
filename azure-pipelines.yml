@@ -1,16 +1,16 @@
 trigger:
-- main
+- main   # branch name
 
 pool:
   name: Default
   demands:
-    - Agent.Name -equals chakri
+    - Agent.Name -equals chakri   # your agent name
 
 variables:
-  HEADLESS: 'false'
+  HEADLESS: 'false'   # set to true for headless mode
 
 steps:
-# Run Maven and capture logs into a file
+# Run Maven build and execute App.java, capture logs
 - script: |
     mvn clean compile exec:java -Dexec.mainClass=com.example.App -Dheadless=$(HEADLESS) | tee app.log
   displayName: "Run App.java and capture console logs"
@@ -20,3 +20,4 @@ steps:
   inputs:
     targetPath: 'app.log'
     artifact: 'console-logs'
+    publishLocation: 'pipeline'
