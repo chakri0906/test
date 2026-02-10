@@ -1,36 +1,16 @@
-# File: azure-pipelines.yml
 trigger:
-- main  # Change to your branch if needed
+- main   # or your branch name
 
 pool:
-  name: Default   # Your self-hosted agent pool
+  name: Default   # uses your self-hosted agent pool
   demands:
-    - agent.name -equals chakri
-    - java
-    - maven
-
-variables:
-  JAVA_HOME: /opt/homebrew/opt/openjdk@17
-  PATH: /opt/homebrew/bin:/opt/homebrew/opt/openjdk@17/bin:$(PATH)
+    - Agent.Name -equals chakri
 
 steps:
-# Step 1: Checkout the code
-- checkout: self
-
-# Step 2: Show Java and Maven versions
-- script: |
-    echo "Java version:"
-    java -version
-    echo "Maven version:"
-    mvn -v
-  displayName: 'Check Java and Maven versions'
-
-# Step 3: Build the Maven project
-- script: |
-    mvn clean compile
-  displayName: 'Build Maven Project'
-
-# Step 4: Run Selenium App
-- script: |
-    mvn exec:java -Dexec.mainClass="com.example.App"
-  displayName: 'Run Selenium Tests'
+- task: Maven@3
+  inputs:
+    mavenPomFile: 'pom.xml'
+    goals: 'clean install'
+    options: '-Dmaven.test.failure.ignore=false'
+    publishJUnitResults: true
+    testResultsFiles: '**/surefire-reports/TEST-*.xml'
