@@ -6,6 +6,9 @@ pool:
   demands:
     - Agent.Name -equals chakri
 
+variables:
+  HEADLESS: 'false'  # <-- set to 'false' to run Chrome in headed mode
+
 steps:
 - task: Maven@4
   inputs:
