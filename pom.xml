@@ -13,19 +13,36 @@
   <url>http://maven.apache.org</url>
 
   <dependencies>
+    <!-- Selenium dependency -->
     <dependency>
         <groupId>org.seleniumhq.selenium</groupId>
         <artifactId>selenium-java</artifactId>
         <version>4.16.1</version>
     </dependency>
+
+    <!-- JUnit 4 dependency for your test classes -->
+    <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.13.2</version>
+        <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
     <plugins>
+      <!-- Exec plugin (optional, you already had it) -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
         <version>3.1.0</version>
+      </plugin>
+
+      <!-- Maven Surefire plugin to run tests -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.1.2</version>
       </plugin>
     </plugins>
   </build>
