@@ -7,7 +7,7 @@ pool:
     - Agent.Name -equals chakri
 
 steps:
-- task: Maven@3
+- task: Maven@4
   inputs:
     mavenPomFile: 'pom.xml'
     goals: 'clean test'
