@@ -1,18 +1,28 @@
 trigger:
-- main   # or your branch name
+- main  # your branch name
 
 pool:
   name: Default
   demands:
-    - Agent.Name -equals chakri
+    - Agent.Name -equals chakri  # your agent name
 
 variables:
-  HEADLESS: 'false'  # <-- set to 'false' to run Chrome in headed mode
+  # Set HEADLESS to false to run Chrome in headed mode
+  HEADLESS: 'false'
 
 steps:
+# Ensure Maven is available (skip JavaToolInstaller if Java is preinstalled)
 - task: Maven@4
   inputs:
     mavenPomFile: 'pom.xml'
-    goals: 'clean test'
-    publishJUnitResults: true
-    testResultsFiles: '**/surefire-reports/TEST-*.xml'
+    goals: 'clean compile exec:java'
+    options: '-Dexec.mainClass=com.example.App'
+    publishJUnitResults: false  # App.java is not a test
+  env:
+    HEADLESS: $(HEADLESS)
+
+# Optional: Publish any logs if needed
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: '$(System.DefaultWorkingDirectory)'
+    artifact: 'logs'
