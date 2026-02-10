@@ -10,17 +10,13 @@
   <packaging>jar</packaging>
   <version>1.0-SNAPSHOT</version>
   <name>selenium-demo</name>
-  <url>http://maven.apache.org</url>
 
   <dependencies>
-    <!-- Selenium dependency -->
     <dependency>
         <groupId>org.seleniumhq.selenium</groupId>
         <artifactId>selenium-java</artifactId>
         <version>4.16.1</version>
     </dependency>
-
-    <!-- JUnit 4 dependency for your test classes -->
     <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
@@ -31,14 +27,25 @@
 
   <build>
     <plugins>
-      <!-- Exec plugin (optional, you already had it) -->
+      <!-- Exec plugin to run App.java -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
         <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>run-app</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+            <configuration>
+              <mainClass>com.example.App</mainClass>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
 
-      <!-- Maven Surefire plugin to run tests -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -46,5 +53,4 @@
       </plugin>
     </plugins>
   </build>
-
 </project>
