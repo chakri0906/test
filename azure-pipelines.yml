@@ -1,5 +1,5 @@
 trigger:
-- main   # or your branch name
+- main   # your branch name
 
 pool:
   name: Default
@@ -7,12 +7,33 @@ pool:
     - Agent.Name -equals chakri
 
 variables:
-  HEADLESS: 'false'  # <-- set to 'false' to run Chrome in headed mode
+  HEADLESS: 'false'  # 'false' = headed mode, 'true' = headless
 
 steps:
+# Checkout your repo
+- checkout: self
+
+# Set up Java (for Maven/Selenium)
+- task: JavaToolInstaller@0
+  inputs:
+    versionSpec: '17'   # Compatible with Selenium
+    jdkArchitectureOption: 'x64'
+    jdkSourceOption: 'PreInstalled'
+
+# Make sure Chrome is installed on macOS agent
+- script: |
+    if ! command -v /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome &> /dev/null
+    then
+        echo "Chrome not found! Please install Chrome on your agent."
+        exit 1
+    else
+        echo "Chrome is installed."
+    fi
+  displayName: 'Check Chrome Installation'
+
+# Run Maven and execute App.java
 - task: Maven@4
   inputs:
     mavenPomFile: 'pom.xml'
-    goals: 'clean test'
-    publishJUnitResults: true
-    testResultsFiles: '**/surefire-reports/TEST-*.xml'
+    goals: 'clean compile exec:java'
+    options: '-Dexec.mainClass=com.example.App -Dheadless=$(HEADLESS)'
