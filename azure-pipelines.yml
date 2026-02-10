@@ -2,7 +2,7 @@ trigger:
 - main   # or your branch name
 
 pool:
-  name: Default   # uses your self-hosted agent pool
+  name: Default
   demands:
     - Agent.Name -equals chakri
 
@@ -10,7 +10,6 @@ steps:
 - task: Maven@3
   inputs:
     mavenPomFile: 'pom.xml'
-    goals: 'clean install'
-    options: '-Dmaven.test.failure.ignore=false'
+    goals: 'clean test'
     publishJUnitResults: true
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
