@@ -1,28 +1,22 @@
 trigger:
-- main  # your branch name
+- main
 
 pool:
   name: Default
   demands:
-    - Agent.Name -equals chakri  # your agent name
+    - Agent.Name -equals chakri
 
 variables:
-  # Set HEADLESS to false to run Chrome in headed mode
   HEADLESS: 'false'
 
 steps:
-# Ensure Maven is available (skip JavaToolInstaller if Java is preinstalled)
-- task: Maven@4
-  inputs:
-    mavenPomFile: 'pom.xml'
-    goals: 'clean compile exec:java'
-    options: '-Dexec.mainClass=com.example.App'
-    publishJUnitResults: false  # App.java is not a test
-  env:
-    HEADLESS: $(HEADLESS)
+# Run Maven and capture logs into a file
+- script: |
+    mvn clean compile exec:java -Dexec.mainClass=com.example.App -Dheadless=$(HEADLESS) | tee app.log
+  displayName: "Run App.java and capture console logs"
 
-# Optional: Publish any logs if needed
+# Publish the captured log file as an artifact
 - task: PublishPipelineArtifact@1
   inputs:
-    targetPath: '$(System.DefaultWorkingDirectory)'
-    artifact: 'logs'
+    targetPath: 'app.log'
+    artifact: 'console-logs'
